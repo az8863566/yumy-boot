@@ -6,10 +6,8 @@ import lombok.Getter;
 /**
  * 用户类型枚举
  * <p>
- * 用于区分不同认证链的用户类型，确保安全上下文的清晰隔离。
+ * 用于区分不同认证链的用户类型,确保安全上下文的清晰隔离。
  */
-@Getter
-@AllArgsConstructor
 public enum UserType {
 
     /**
@@ -31,6 +29,19 @@ public enum UserType {
      * 类型描述
      */
     private final String description;
+
+    UserType(Integer code, String description) {
+        this.code = code;
+        this.description = description;
+    }
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 
     /**
      * 根据编码获取用户类型

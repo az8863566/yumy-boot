@@ -54,6 +54,7 @@ CREATE TABLE sys_menu (
     sort_order INT4 DEFAULT 0, -- 显示顺序
     visible INT2 DEFAULT 1, -- 菜单显示状态(1显示 0隐藏)
     status INT2 DEFAULT 1, -- 菜单可用状态(1正常 0停用)
+    deleted INT2 DEFAULT 0, -- 逻辑删除(0未删 1已删)
     create_by BIGINT,
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_by BIGINT,
@@ -109,6 +110,7 @@ CREATE TABLE sys_dict_type (
     dict_name VARCHAR(128) DEFAULT '', -- 字典名称
     dict_type VARCHAR(128) DEFAULT '', -- 字典类型(如: sys_user_sex)
     status INT2 DEFAULT 1,
+    deleted INT2 DEFAULT 0, -- 逻辑删除(0未删 1已删)
     create_by BIGINT,
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_by BIGINT,
@@ -131,6 +133,7 @@ CREATE TABLE sys_dict_data (
     list_class VARCHAR(128), -- 表格回显样式 (如: primary, danger)
     is_default INT2 DEFAULT 0, -- 是否默认(1是 0否)
     status INT2 DEFAULT 1,
+    deleted INT2 DEFAULT 0, -- 逻辑删除(0未删 1已删)
     create_by BIGINT,
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_by BIGINT,
@@ -148,6 +151,7 @@ CREATE TABLE sys_config (
     config_key VARCHAR(128) DEFAULT '', -- 参数键名 (如: sys.user.initPassword)
     config_value TEXT, -- 参数键值
     config_type INT2 DEFAULT 2, -- 系统内置(1是 2否) - 内置参数不可删除
+    deleted INT2 DEFAULT 0, -- 逻辑删除(0未删 1已删)
     create_by BIGINT,
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_by BIGINT,

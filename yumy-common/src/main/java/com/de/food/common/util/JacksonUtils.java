@@ -1,4 +1,4 @@
-package com.de.food.common.utils;
+package com.de.food.common.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,6 +19,9 @@ import java.util.List;
 public class JacksonUtils {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private JacksonUtils() {
+    }
 
     static {
         // 1. 忽略未知属性，防止反序列化报错
