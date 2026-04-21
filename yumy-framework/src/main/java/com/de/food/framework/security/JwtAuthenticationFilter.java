@@ -1,5 +1,6 @@
 package com.de.food.framework.security;
 
+import com.de.food.common.entity.UserType;
 import com.de.food.framework.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -39,6 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Long userId = Long.valueOf(claims.getSubject());
                 String username = claims.get("username", String.class);
                 String nickname = claims.get("nickname", String.class);
+                Integer userTypeCode = claims.get("userType", Integer.class);
+                UserType userType = UserType.fromCode(userTypeCode);
 
                 @SuppressWarnings("unchecked")
                 List<String> roles = claims.get("roles", List.class);
@@ -46,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         ? List.of()
                         : roles.stream().map(SimpleGrantedAuthority::new).toList();
 
-                JwtUserInfo userInfo = new JwtUserInfo(userId, username, nickname);
+                JwtUserInfo userInfo = new JwtUserInfo(userId, username, nickname, userType);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userInfo, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -1,6 +1,7 @@
 package com.de.food.framework.security;
 
 import com.de.food.common.entity.UserInfo;
+import com.de.food.common.entity.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,4 +18,5 @@ public class JwtUserInfo implements UserInfo {
     private final Long userId;
     private final String username;
     private final String nickname;
+    private final UserType userType;
 }

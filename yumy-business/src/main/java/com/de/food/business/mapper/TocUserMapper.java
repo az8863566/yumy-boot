@@ -1,7 +1,7 @@
-package com.de.food.toc.mapper;
+package com.de.food.business.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.de.food.toc.entity.TocUser;
+import com.de.food.business.entity.TocUser;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

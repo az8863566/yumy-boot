@@ -16,6 +16,10 @@
     <dependencies>
         <dependency>
             <groupId>com.de.food</groupId>
+            <artifactId>yumy-business</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.de.food</groupId>
             <artifactId>yumy-admin</artifactId>
         </dependency>
         <dependency>

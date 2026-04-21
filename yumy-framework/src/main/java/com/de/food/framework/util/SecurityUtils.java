@@ -1,6 +1,7 @@
 package com.de.food.framework.util;
 
 import com.de.food.common.entity.UserInfo;
+import com.de.food.common.entity.UserType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -79,6 +80,30 @@ public final class SecurityUtils {
     public static String getNickname() {
         UserInfo userInfo = getUserInfo();
         return userInfo != null ? userInfo.getNickname() : null;
+    }
+
+    /**
+     * 获取当前用户类型
+     *
+     * @return 用户类型，未登录时返回 null
+     */
+    public static UserType getUserType() {
+        UserInfo userInfo = getUserInfo();
+        return userInfo != null ? userInfo.getUserType() : null;
+    }
+
+    /**
+     * 获取当前用户类型，未登录时抛出异常
+     *
+     * @return 用户类型
+     * @throws IllegalStateException 未登录时抛出
+     */
+    public static UserType requireUserType() {
+        UserType userType = getUserType();
+        if (userType == null) {
+            throw new IllegalStateException("当前未登录，无法获取用户类型");
+        }
+        return userType;
     }
 
     /**

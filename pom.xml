@@ -12,6 +12,7 @@
     <modules>
         <module>yumy-common</module>
         <module>yumy-framework</module>
+        <module>yumy-business</module>
         <module>yumy-admin</module>
         <module>yumy-toc</module>
         <module>yumy-bootstrap</module>
@@ -92,6 +93,11 @@
             <dependency>
                 <groupId>com.de.food</groupId>
                 <artifactId>yumy-toc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.de.food</groupId>
+                <artifactId>yumy-business</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

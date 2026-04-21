@@ -25,4 +25,11 @@ public interface UserInfo {
     default String getNickname() {
         return null;
     }
+
+    /**
+     * 获取用户类型
+     *
+     * @return 用户类型枚举
+     */
+    UserType getUserType();
 }

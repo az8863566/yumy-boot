@@ -48,11 +48,15 @@ yumy-boot (根项目，负责依赖版本管理)
 ├── yumy-framework     # 核心框架模块 (依赖 common)
 │   └── Spring Security配置、Redis缓存配置、MyBatis-Plus配置、全局异常拦截器、JWT工具等
 │
-├── yumy-admin         # 后台管理业务模块 (依赖 framework)
-│   └── Controller/Service/Mapper，处理 /admin/** 路由，包含RBAC权限管理、系统配置等
+├── yumy-business      # 🌟核心业务与数据层 (依赖 framework)
+│   └── 存放所有的 Entity、Mapper、以及基础的 Service (MyBatis-Plus 的 IService/ServiceImpl)
+│       包含 Admin 的表数据和 ToC 的表数据。这里【不写】任何 Controller 和权限校验。
 │
-├── yumy-toc           # ToC端数据管理模块 (依赖 framework)
-│   └── Controller/Service/Mapper，处理 /api/toc/** 路由，包含C端用户注册登录、业务数据等
+├── yumy-admin         # 后台管理业务模块 (依赖 yumy-business, framework)
+│   └── Controller/业务编排 Service/DTO/VO/Converter，处理 /admin/** 路由，包含RBAC权限管理、系统配置等
+│
+├── yumy-toc           # ToC端数据管理模块 (依赖 yumy-business, framework)
+│   └── Controller/业务编排 Service/DTO/VO/Converter，处理 /api/toc/** 路由，包含C端用户注册登录、业务数据等
 │
 └── yumy-bootstrap     # 启动与组装模块 (依赖 admin, toc)
     └── 主启动类(Application.java)、application.yml 配置文件
@@ -61,16 +65,19 @@ yumy-boot (根项目，负责依赖版本管理)
 
 - `yumy-common`：仅包含与具体业务无关的基础设施代码
 - `yumy-framework`：封装通用能力（安全、缓存、ORM 配置、文档等）
-- `yumy-admin`：面向运营/管理的后台接口，处理 `/admin/**` 路由
-- `yumy-toc`：面向终端用户的开放接口，处理 `/api/toc/**` 路由
+- `yumy-business`：仅包含数据层代码（Entity/Mapper/基础Service），不包含任何业务编排逻辑、Controller、权限校验、DTO、VO、Converter
+- `yumy-admin`：面向运营/管理的后台接口，处理 `/admin/**` 路由，专注业务编排和前后端交互
+- `yumy-toc`：面向终端用户的开放接口，处理 `/api/toc/**` 路由，专注业务编排和前后端交互
 - `yumy-bootstrap`：仅负责模块组装、配置管理与应用启动，不写业务逻辑
 
 ## 一定不能做
 
 - 不要将业务逻辑写入 `common` 或 `framework` 模块
 - 不要在 `bootstrap` 模块中编写 Controller/Service
+- 不要在 `yumy-business` 模块中编写 Controller、DTO、VO、Converter
+- 不要在 `yumy-business` 模块中处理权限校验、JWT 生成等业务逻辑
 - 不要绕过 MyBatis-Plus 的自动注入机制手动维护 `create_time/update_time` 等字段
-- 不要在不同模块之间产生循环依赖（依赖方向必须：bootstrap → admin/toc → framework → common）
+- 不要在不同模块之间产生循环依赖（依赖方向必须：bootstrap → admin/toc → yumy-business → framework → common）
 
 ## 一定要做
 

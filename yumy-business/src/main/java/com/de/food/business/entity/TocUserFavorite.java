@@ -1,4 +1,4 @@
-package com.de.food.toc.entity;
+package com.de.food.business.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -9,17 +9,17 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 用户点赞表
+ * 用户收藏表
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("toc_user_like")
-@Schema(description = "用户点赞")
-public class TocUserLike extends BaseEntity {
+@TableName("toc_user_favorite")
+@Schema(description = "用户收藏")
+public class TocUserFavorite extends BaseEntity {
 
     @TableId(type = IdType.ASSIGN_ID)
-    @Schema(description = "点赞ID")
-    private Long likeId;
+    @Schema(description = "收藏ID")
+    private Long favoriteId;
 
     @Schema(description = "用户ID")
     private Long userId;

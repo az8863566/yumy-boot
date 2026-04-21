@@ -1,4 +1,4 @@
-package com.de.food.toc.entity;
+package com.de.food.business.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

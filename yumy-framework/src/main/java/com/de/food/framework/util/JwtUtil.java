@@ -1,5 +1,6 @@
 package com.de.food.framework.util;
 
+import com.de.food.common.entity.UserType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -34,12 +35,13 @@ public class JwtUtil {
      * @param userId   用户ID
      * @param username 用户名
      * @param nickname 昵称
+     * @param userType 用户类型
      * @param roles    角色列表
      */
-    public String generateToken(String userId, String username, String nickname, List<String> roles) {
+    public String generateToken(Long userId, String username, String nickname, UserType userType, List<String> roles) {
         return Jwts.builder()
-                .subject(userId)
-                .claims(Map.of("username", username, "nickname", nickname, "roles", roles))
+                .subject(String.valueOf(userId))
+                .claims(Map.of("username", username, "nickname", nickname, "userType", userType.getCode(), "roles", roles))
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())
