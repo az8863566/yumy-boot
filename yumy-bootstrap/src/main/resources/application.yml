@@ -1,0 +1,52 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: yumy-boot
+  # 虚拟线程
+  threads:
+    virtual:
+      enabled: true
+  # 数据源
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/yumy
+    username: postgres
+    password: postgres
+  # Redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+  # Spring Cache
+  cache:
+    type: redis
+
+# MyBatis-Plus
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  global-config:
+    db-config:
+      # 雪花算法生成ID
+      id-type: assign_id
+      # 逻辑删除
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    # 驼峰转下划线
+    map-underscore-to-camel-case: true
+
+# JWT
+jwt:
+  secret: yumy-boot-jwt-secret-key-must-be-at-least-32-characters-long
+  expiration: 86400000
+
+# SpringDoc
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
