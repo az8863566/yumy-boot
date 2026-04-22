@@ -67,6 +67,7 @@ CREATE TABLE toc.toc_recipe (
     difficulty  VARCHAR(10)  NOT NULL CHECK (difficulty IN ('简单', '中等', '困难')),
     time        VARCHAR(20)  NOT NULL,
     servings    INT4         DEFAULT 1,
+    recommend_sort INT4     DEFAULT 0,                     -- 推荐排序(越小越靠前,0不参与推荐)
     deleted     INT2         DEFAULT 0,
     create_by   BIGINT,
     create_time TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,

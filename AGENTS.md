@@ -33,16 +33,16 @@
 
 **本项目统一使用 JDK 21**
 
-- **JDK 路径**：`D:\workTool\jdk-21.0.10`
+- **JDK 路径**：根据实际安装位置配置（常见路径如 `C:\Program Files\Java\jdk-21`、`D:\dev\jdk21` 等）
 - **打包前确认**：`JAVA_HOME` 必须指向 JDK 21
 - **临时切换命令**（PowerShell）：
   ```powershell
-  $env:JAVA_HOME = "D:\workTool\jdk-21.0.10"
+  $env:JAVA_HOME = "<你的JDK21实际安装路径>"
   $env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
   java -version  # 验证版本
   ```
 
-> **注意**：系统默认 JDK 为 11，打包/运行本项目前务必切换至 JDK 21
+> **注意**：系统默认 JDK 可能不是 21，打包/运行本项目前务必切换至 JDK 21
 
 ## 项目结构与边界
 

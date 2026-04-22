@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: yumy
+      POSTGRES_USER: yumy
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-yumy123}
+    ports:
+      - "${DB_PORT:-15432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U yumy"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7
+    command: redis-server --requirepass ${REDIS_PASSWORD:-yumy123}
+    ports:
+      - "${REDIS_PORT:-16379}:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-yumy123}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      DB_URL: jdbc:postgresql://postgres:5432/yumy?search_path=admin,toc,public
+      DB_USERNAME: yumy
+      DB_PASSWORD: ${DB_PASSWORD:-yumy123}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-yumy123}
+      JWT_SECRET: ${JWT_SECRET:-yumy-boot-jwt-secret-key-must-be-at-least-32-characters-long}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+  redis-data:

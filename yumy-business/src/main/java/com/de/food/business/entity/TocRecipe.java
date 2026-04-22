@@ -44,4 +44,7 @@ public class TocRecipe extends BaseEntity {
 
     @Schema(description = "几人份")
     private Integer servings;
+
+    @Schema(description = "推荐排序（越小越靠前，0表示不参与推荐）")
+    private Integer recommendSort;
 }

@@ -22,4 +22,8 @@ public class TocUserUpdateDTO {
     @Size(max = 512, message = "头像URL最长512个字符")
     @Schema(description = "头像URL")
     private String avatar;
+
+    @Size(max = 256, message = "签名最长256个字符")
+    @Schema(description = "签名")
+    private String signature;
 }

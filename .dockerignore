@@ -1,0 +1,12 @@
+target/
+.idea/
+.docs/
+.log/
+.script/
+.qoder/
+*.class
+*.log
+*.iml
+.git/
+.gitignore
+AGENTS.md

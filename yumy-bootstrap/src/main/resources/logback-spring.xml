@@ -68,7 +68,7 @@
     <logger name="com.de.food" level="${LOG_LEVEL:-DEBUG}"/>
 
     <!-- ========== 开发环境：控制台 + 文件 ========== -->
-    <springProfile name="dev | default">
+    <springProfile name="dev | local | default">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE_ALL"/>

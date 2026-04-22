@@ -90,7 +90,8 @@ public class TocRecipeServiceImpl implements TocRecipeService {
     public IPage<TocRecipeVO> getRecommended(int pageNum, int pageSize) {
         Page<TocRecipe> page = new Page<>(pageNum, pageSize);
         LambdaQueryWrapper<TocRecipe> wrapper = new LambdaQueryWrapper<TocRecipe>()
-                .orderByDesc(TocRecipe::getCreateTime);
+                .gt(TocRecipe::getRecommendSort, 0)
+                .orderByAsc(TocRecipe::getRecommendSort);
         IPage<TocRecipe> entityPage = tocRecipeMapper.selectPage(page, wrapper);
         return entityPage.convert(tocRecipeConverter::toVO);
     }

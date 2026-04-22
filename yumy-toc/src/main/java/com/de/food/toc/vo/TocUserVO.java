@@ -21,4 +21,7 @@ public class TocUserVO {
 
     @Schema(description = "头像")
     private String avatar;
+
+    @Schema(description = "签名")
+    private String signature;
 }
