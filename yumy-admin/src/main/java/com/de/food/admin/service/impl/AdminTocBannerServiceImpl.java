@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.de.food.admin.converter.TocBannerConverter;
+import com.de.food.admin.converter.AdminTocBannerConverter;
 import com.de.food.admin.dto.TocBannerCreateDTO;
 import com.de.food.admin.dto.TocBannerQueryDTO;
 import com.de.food.admin.dto.TocBannerUpdateDTO;
@@ -24,9 +24,9 @@ import org.springframework.util.StringUtils;
  */
 @Service
 @RequiredArgsConstructor
-public class TocBannerServiceImpl extends ServiceImpl<TocBannerMapper, TocBanner> implements TocBannerService {
+public class AdminTocBannerServiceImpl extends ServiceImpl<TocBannerMapper, TocBanner> implements TocBannerService {
 
-    private final TocBannerConverter tocBannerConverter;
+    private final AdminTocBannerConverter tocBannerConverter;
 
     @Override
     public IPage<TocBannerVO> page(TocBannerQueryDTO queryDTO) {

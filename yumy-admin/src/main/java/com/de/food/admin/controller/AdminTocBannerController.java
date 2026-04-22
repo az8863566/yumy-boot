@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/v1/banner")
 @RequiredArgsConstructor
 @Tag(name = "轮播图管理")
-public class TocBannerController {
+public class AdminTocBannerController {
 
     private final TocBannerService tocBannerService;
 

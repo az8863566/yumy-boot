@@ -11,7 +11,7 @@ import org.mapstruct.MappingTarget;
  * 轮播图对象转换器
  */
 @Mapper(componentModel = "spring")
-public interface TocBannerConverter {
+public interface AdminTocBannerConverter {
 
     TocBanner toEntity(TocBannerCreateDTO dto);
 
