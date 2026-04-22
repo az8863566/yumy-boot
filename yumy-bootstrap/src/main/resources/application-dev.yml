@@ -1,0 +1,28 @@
+# 开发环境配置
+# 启动命令：java -jar yumy-bootstrap.jar --spring.profiles.active=dev
+
+spring:
+  # 数据源
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://172.16.1.58:5432/yumy-boot?socketTimeout=15&loginTimeout=15&sslmode=disable&search_path=admin,toc,public
+    username: ${DB_USERNAME:engi_020}
+    password: ${DB_PASSWORD:Q#5BeC!Txe}
+  # Redis
+  data:
+    redis:
+      host: 172.16.1.247
+      port: 6379
+      password: 123456
+
+# Security（开发环境关闭安全校验）
+security:
+  enabled: false
+
+# CORS 配置（开发环境允许所有源）
+cors:
+  allowed-origins: "*"
+
+# JWT
+jwt:
+  secret: ${JWT_SECRET:yumy-boot-jwt-secret-key-must-be-at-least-32-characters-long}

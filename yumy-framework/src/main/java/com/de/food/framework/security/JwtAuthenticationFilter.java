@@ -9,7 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,6 +26,8 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final SecurityContextHolderStrategy securityContextHolderStrategy =
+            SecurityContextHolder.getContextHolderStrategy();
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -52,9 +56,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 JwtUserInfo userInfo = new JwtUserInfo(userId, username, nickname, userType);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userInfo, null, authorities);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
+                context.setAuthentication(authentication);
+                this.securityContextHolderStrategy.setContext(context);
             } catch (Exception e) {
-                SecurityContextHolder.clearContext();
+                this.securityContextHolderStrategy.clearContext();
             }
         }
         filterChain.doFilter(request, response);

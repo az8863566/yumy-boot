@@ -38,6 +38,9 @@ spring-boot-devtools.properties
 *.log
 logs/
 
+# Upload files
+.upload/
+
 # OS
 Thumbs.db
 .DS_Store

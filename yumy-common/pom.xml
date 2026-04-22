@@ -14,23 +14,31 @@
     <description>公共模块 - 工具类、全局异常定义、统一返回结果、基础DTO等</description>
 
     <dependencies>
-        <!-- MyBatis-Plus（仅用于注解，不引入Spring配置） -->
+        <!-- MyBatis-Plus（仅注解，不引入 Spring 配置） -->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+            <artifactId>mybatis-plus-annotation</artifactId>
         </dependency>
-        <!-- Jackson -->
+        <!-- Spring Context（SpringUtils 使用，运行时由 framework 模块提供） -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- SLF4J API（@Slf4j 注解生成代码所需） -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <!-- Jackson 3.x（databind 核心包，JSR310 时间模块已内置） -->
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <!-- Jackson Annotations 2.x（Jackson 3 仍使用 2.x 注解包） -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
         <!-- Jakarta Servlet API（用于Request上下文获取） -->
         <dependency>

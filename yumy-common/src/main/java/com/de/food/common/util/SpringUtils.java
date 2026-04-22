@@ -1,10 +1,15 @@
-package com.de.food.common.utils;
+package com.de.food.common.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+/**
+ * Spring 上下文工具类
+ * <p>
+ * 获取 Bean、环境信息等，禁止在其他工具类中重复定义。
+ */
 @Component
 public class SpringUtils implements ApplicationContextAware {
 
@@ -33,6 +38,7 @@ public class SpringUtils implements ApplicationContextAware {
      * 获取当前环境 (dev, test, prod)
      */
     public static String getActiveProfile() {
-        return applicationContext.getEnvironment().getActiveProfiles()[0];
+        String[] profiles = applicationContext.getEnvironment().getActiveProfiles();
+        return profiles.length > 0 ? profiles[0] : "default";
     }
 }

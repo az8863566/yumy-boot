@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.de.food.common.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +14,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_user")
+@TableName(value = "sys_user", schema = "admin")
 @Schema(description = "用户信息")
 public class SysUser extends BaseEntity {
 
@@ -24,6 +25,7 @@ public class SysUser extends BaseEntity {
     @Schema(description = "用户名")
     private String username;
 
+    @JsonIgnore
     @Schema(description = "密码")
     private String password;
 

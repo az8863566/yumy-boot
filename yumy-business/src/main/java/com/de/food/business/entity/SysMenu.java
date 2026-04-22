@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("sys_menu")
+@TableName(value = "sys_menu", schema = "admin")
 @Schema(description = "菜单权限")
 public class SysMenu extends BaseEntity {
 

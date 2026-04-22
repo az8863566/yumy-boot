@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * 操作日志记录表
  */
 @Data
-@TableName("sys_oper_log")
+@TableName(value = "sys_oper_log", schema = "admin")
 @Schema(description = "操作日志")
 public class SysOperLog implements Serializable {
 

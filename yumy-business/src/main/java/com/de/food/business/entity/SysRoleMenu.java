@@ -10,7 +10,7 @@ import java.io.Serializable;
  * 角色和菜单关联表
  */
 @Data
-@TableName("sys_role_menu")
+@TableName(value = "sys_role_menu", schema = "admin")
 @Schema(description = "角色菜单关联")
 public class SysRoleMenu implements Serializable {
 

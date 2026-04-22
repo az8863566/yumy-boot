@@ -1,6 +1,6 @@
 ## 技术架构
 
-- Spring Boot 4.x
+- Spring Boot 4.x（默认集成 Jackson 3.x）
 - Java 21（启用虚拟线程优化并发处理）
 - PostgreSQL（关系型数据库）
 - Redis（缓存与分布式会话）
@@ -19,13 +19,30 @@
 ## 打包
 
 - **打包环境**：Windows 系统
-- **打包命令**：在根目录执行 `mvn clean package -Dmaven.test.skip=true`
+- **打包命令**：在根目录执行 `mvn clean package "-Dmaven.test.skip=true"`
 - **打包产物**：可执行 JAR 文件位于 `yumy-bootstrap/target/yumy-bootstrap-1.0.0-SNAPSHOT.jar`
 - **运行命令**：`java -jar yumy-bootstrap/target/yumy-bootstrap-1.0.0-SNAPSHOT.jar`
 - **注意事项**：
   - Windows 环境下确保 JDK 21 已正确配置
   - Maven 版本建议 3.8+ 
   - 打包前确保所有模块编译通过，特别是 MapStruct 的注解处理器已生效
+
+## 环境配置
+
+### JDK 配置
+
+**本项目统一使用 JDK 21**
+
+- **JDK 路径**：`D:\workTool\jdk-21.0.10`
+- **打包前确认**：`JAVA_HOME` 必须指向 JDK 21
+- **临时切换命令**（PowerShell）：
+  ```powershell
+  $env:JAVA_HOME = "D:\workTool\jdk-21.0.10"
+  $env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
+  java -version  # 验证版本
+  ```
+
+> **注意**：系统默认 JDK 为 11，打包/运行本项目前务必切换至 JDK 21
 
 ## 项目结构与边界
 
@@ -138,9 +155,21 @@ yumy-boot (根项目，负责依赖版本管理)
 
 #### 5.2 JSON 序列化
 
-- 全局统一使用 Jackson，禁止 Fastjson、Gson 等
+- 全局统一使用 Jackson 3.x，禁止 Fastjson、Gson 等
+- **业务代码统一使用 `JacksonUtils` 工具类**（`com.de.food.common.util.JacksonUtils`），禁止 `new ObjectMapper()` 或 `JsonMapper.builder()`
+- **框架层集成**（如 SecurityConfig、RedisConfig）注入 Spring 自动配置的 `ObjectMapper` Bean，不要自行创建实例
+- 如需特殊序列化策略，应在 `JacksonUtils` 中扩展方法，而非另建 ObjectMapper
 - 日期时间格式：`@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")`
+- **导入规则**：databind/core 类（`ObjectMapper`、`JsonMapper`、`TypeReference`、`JacksonException` 等）使用 `tools.jackson.*`；注解类（`@JsonFormat`、`@JsonIgnore`、`@JsonInclude`、`@JsonProperty` 等）仍使用 `com.fasterxml.jackson.annotation.*`
+- JSR310 时间模块已内置到 databind，禁止手动注册 `JavaTimeModule`
 
 #### 5.3 数据安全
 
 - 敏感数据入库前必须加密或脱敏，禁止明文存储
+
+#### 5.4 文件编码
+
+- 项目所有上下文相关文件（如 `.md`、`.java`、`.yml`、`.properties`、`.xml` 等）必须使用 **UTF-8** 编码格式
+- 禁止使用 GBK、GB2312 等其他编码，避免中文乱码问题
+- 编辑器/IDE 需统一配置默认编码为 UTF-8
+- Git 提交时需确保文件编码一致性

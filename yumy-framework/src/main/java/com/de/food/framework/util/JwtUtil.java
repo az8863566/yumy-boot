@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.emptyList;
+
 /**
  * JWT 工具类
  */
@@ -41,7 +43,7 @@ public class JwtUtil {
     public String generateToken(Long userId, String username, String nickname, UserType userType, List<String> roles) {
         return Jwts.builder()
                 .subject(String.valueOf(userId))
-                .claims(Map.of("username", username, "nickname", nickname, "userType", userType.getCode(), "roles", roles))
+                .claims(Map.of("username", username, "nickname", nickname, "userType", userType.getCode(), "roles", roles != null ? roles : emptyList()))
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())

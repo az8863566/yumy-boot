@@ -10,7 +10,7 @@ import java.io.Serializable;
  * 用户和角色关联表
  */
 @Data
-@TableName("sys_user_role")
+@TableName(value = "sys_user_role", schema = "admin")
 @Schema(description = "用户角色关联")
 public class SysUserRole implements Serializable {
 

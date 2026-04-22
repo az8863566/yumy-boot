@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 主启动类
  */
 @SpringBootApplication
-@MapperScan({"com.de.food.business.mapper", "com.de.food.admin.mapper", "com.de.food.toc.mapper"})
+@MapperScan("com.de.food.business.mapper")
 public class Application {
 
     public static void main(String[] args) {

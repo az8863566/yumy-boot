@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @Data
 public abstract class BaseEntity implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 逻辑删除标志（0 正常，1 删除）
      */

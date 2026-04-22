@@ -4,6 +4,7 @@ import com.de.food.common.entity.UserInfo;
 import com.de.food.common.entity.UserType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 
 /**
  * 安全上下文工具类
@@ -18,6 +19,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * </ul>
  */
 public final class SecurityUtils {
+
+    private static final SecurityContextHolderStrategy STRATEGY =
+            SecurityContextHolder.getContextHolderStrategy();
 
     private SecurityUtils() {}
 
@@ -121,6 +125,6 @@ public final class SecurityUtils {
     // ---------- 内部方法 ----------
 
     private static Authentication getAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
+        return STRATEGY.getContext().getAuthentication();
     }
 }

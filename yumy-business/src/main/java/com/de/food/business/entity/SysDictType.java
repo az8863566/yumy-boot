@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("sys_dict_type")
+@TableName(value = "sys_dict_type", schema = "admin")
 @Schema(description = "字典类型")
 public class SysDictType extends BaseEntity {
 

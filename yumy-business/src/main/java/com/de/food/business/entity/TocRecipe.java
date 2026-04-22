@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("toc_recipe")
+@TableName(value = "toc_recipe", schema = "toc")
 @Schema(description = "菜谱")
 public class TocRecipe extends BaseEntity {
 

@@ -8,21 +8,14 @@ spring:
   threads:
     virtual:
       enabled: true
-  # 数据源
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://192.168.110.112:15432/yumy-boot
-    username: yumy
-    password: yumy123
-  # Redis
-  data:
-    redis:
-      host: 192.168.110.112
-      port: 6379
-      password: yumy123
   # Spring Cache
   cache:
     type: redis
+  # 文件上传
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
 
 # MyBatis-Plus
 mybatis-plus:
@@ -39,10 +32,13 @@ mybatis-plus:
     # 驼峰转下划线
     map-underscore-to-camel-case: true
 
+# Security
+security:
+  enabled: ${SECURITY_ENABLED:true}
+
 # JWT
 jwt:
-  secret: yumy-boot-jwt-secret-key-must-be-at-least-32-characters-long
-  expiration: 86400000
+  expiration: ${JWT_EXPIRATION:86400000}
 
 # SpringDoc
 springdoc:
@@ -50,3 +46,9 @@ springdoc:
     enabled: true
   swagger-ui:
     enabled: true
+
+# 文件上传
+upload:
+  base-path: .upload
+  url-prefix: /upload
+  max-file-size-mb: 10

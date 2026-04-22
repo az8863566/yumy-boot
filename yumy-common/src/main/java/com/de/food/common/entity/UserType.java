@@ -1,6 +1,5 @@
 package com.de.food.common.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
