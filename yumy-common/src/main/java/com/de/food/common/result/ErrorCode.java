@@ -49,7 +49,13 @@ public enum ErrorCode {
     TOC_ALREADY_FAVORITED(3005, "已收藏"),
     TOC_NOT_FAVORITED(3006, "未收藏"),
     TOC_HOME_CATEGORY_NOT_CONFIGURED(3007, "首页展示分类未配置"),
-    TOC_BANNER_NOT_FOUND(3008, "轮播图不存在");
+    TOC_BANNER_NOT_FOUND(3008, "轮播图不存在"),
+    TOC_PARENT_CATEGORY_NOT_FOUND(3009, "父分类不存在"),
+    TOC_SUB_CATEGORY_NOT_FOUND(3010, "子分类不存在"),
+    TOC_USER_NOT_FOUND(3011, "C端用户不存在"),
+    TOC_COMMENT_NOT_FOUND(3012, "评论不存在"),
+    TOC_PARENT_CATEGORY_HAS_SUB(3013, "该父分类下存在子分类，无法删除"),
+    TOC_SUB_CATEGORY_HAS_RECIPE(3014, "该子分类下存在菜谱，无法删除");
 
     private final int code;
     private final String msg;

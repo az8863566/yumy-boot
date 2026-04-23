@@ -42,6 +42,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@ConditionalOnProperty(name = "security.enabled", havingValue = "true", matchIfMissing = true)
 public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
@@ -165,21 +166,4 @@ public class SecurityConfig {
         return source;
     }
 
-    /**
-     * Security 关闭时的放行过滤器链
-     * <p>
-     * 当 security.enabled=false 时生效，所有请求直接放行，无需认证。
-     * Order=3 确保优先级最低，作为兜底链最后执行。
-     */
-    @Bean
-    @Order(3)
-    @ConditionalOnProperty(name = "security.enabled", havingValue = "false", matchIfMissing = false)
-    public SecurityFilterChain disabledSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .securityMatcher("/**")
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
-
-        return http.build();
-    }
 }

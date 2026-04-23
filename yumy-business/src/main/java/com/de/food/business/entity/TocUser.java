@@ -37,4 +37,7 @@ public class TocUser extends BaseEntity {
 
     @Schema(description = "签名")
     private String signature;
+
+    @Schema(description = "状态(1正常 0禁用)")
+    private Integer status = 1;
 }
