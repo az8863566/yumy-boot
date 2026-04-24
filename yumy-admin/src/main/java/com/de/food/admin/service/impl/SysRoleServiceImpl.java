@@ -1,7 +1,9 @@
 package com.de.food.admin.service.impl;
 
+import com.baomidou.mybatisplus.core.batch.MybatisBatch;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.MybatisBatchUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.de.food.admin.converter.SysRoleConverter;
@@ -18,13 +20,12 @@ import com.de.food.admin.service.SysRoleService;
 import com.de.food.admin.vo.SysRoleVO;
 import com.de.food.common.exception.BizException;
 import com.de.food.common.result.ErrorCode;
-import com.baomidou.mybatisplus.extension.toolkit.MybatisBatchUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.sql.DataSource;
+import org.apache.ibatis.session.SqlSessionFactory;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     private final SysRoleConverter sysRoleConverter;
     private final SysRoleMenuMapper sysRoleMenuMapper;
     private final SysUserRoleMapper sysUserRoleMapper;
-    private final DataSource dataSource;
+    private final SqlSessionFactory sqlSessionFactory;
 
     @Override
     public IPage<SysRoleVO> page(SysRoleQueryDTO queryDTO) {
@@ -132,10 +133,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
                 rm.setMenuId(menuId);
                 return rm;
             }).toList();
-            MybatisBatchUtils.execute(dataSource, roleMenus, (sqlSession, rm) -> {
-                sqlSession.insert(
-                        "com.de.food.business.mapper.SysRoleMenuMapper.insert", rm);
-            });
+            MybatisBatch.Method<SysRoleMenu> method = new MybatisBatch.Method<>(SysRoleMenuMapper.class);
+            MybatisBatchUtils.execute(sqlSessionFactory, roleMenus, method.insert());
         }
     }
 }

@@ -120,6 +120,25 @@ yumy-boot (根项目，负责依赖版本管理)
 - 联表查询：尽量避免在代码里写长篇的 `for` 循环查库，复杂的连表统计应当编写 SQL 放入 `Mapper.xml` 中
 - **分页插件需单独引入 `mybatis-plus-jsqlparser` 依赖**
 
+#### 批量操作（3.5.4+）
+
+优先使用 `MybatisBatchUtils` 进行批量插入/更新/删除，性能优于 `IService.saveBatch()`：
+
+```java
+import com.baomidou.mybatisplus.core.batch.MybatisBatch;
+import com.baomidou.mybatisplus.core.toolkit.MybatisBatchUtils;
+import org.apache.ibatis.session.SqlSessionFactory;
+
+// 注入 SqlSessionFactory
+private final SqlSessionFactory sqlSessionFactory;
+
+// 批量插入示例
+MybatisBatch.Method<T> method = new MybatisBatch.Method<>(XxxMapper.class);
+MybatisBatchUtils.execute(sqlSessionFactory, dataList, method.insert());
+```
+
+> **注意**：`MybatisBatch` 位于 `core.batch` 包，`MybatisBatchUtils` 位于 `core.toolkit` 包，**不要误用 `extension.toolkit` 包**（该包下不存在这些类）
+
 ### 3.3 时间与日期
 
 - **严禁使用老的 `java.util.Date`**，一律使用 Java 8 时间 API
@@ -327,6 +346,7 @@ Controller 只能做三件事：
 | MapStruct 编译失败 | 检查注解处理器版本，MapStruct 1.6.3 移除了 `NullValuePropertyCheckStrategy` 参数 |
 | Jackson 序列化问题 | 统一使用 `JacksonUtils`，JSR310 已内置禁止手动注册 `JavaTimeModule` |
 | Spring Security Bean 冲突 | 检查是否有同名 Bean，使用 `@Qualifier` 或 `@Primary` 解决 |
+| MyBatis-Plus 批量操作类找不到 | `MybatisBatch` → `core.batch`，`MybatisBatchUtils` → `core.toolkit`，**不是 `extension.toolkit`** |
 
 ### B. 规范速查表
 
