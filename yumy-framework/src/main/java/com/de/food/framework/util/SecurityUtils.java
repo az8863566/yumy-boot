@@ -2,6 +2,8 @@ package com.de.food.framework.util;
 
 import com.de.food.common.entity.UserInfo;
 import com.de.food.common.entity.UserType;
+import com.de.food.common.exception.BizException;
+import com.de.food.common.result.ErrorCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
@@ -56,12 +58,12 @@ public final class SecurityUtils {
      * 获取当前登录用户 ID，未登录时抛出异常
      *
      * @return 用户 ID
-     * @throws IllegalStateException 未登录时抛出
+     * @throws BizException 未登录时抛出
      */
     public static Long requireUserId() {
         Long userId = getUserId();
         if (userId == null) {
-            throw new IllegalStateException("当前未登录，无法获取用户ID");
+            throw new BizException(ErrorCode.UNAUTHORIZED, "当前未登录，无法获取用户ID");
         }
         return userId;
     }
@@ -100,12 +102,12 @@ public final class SecurityUtils {
      * 获取当前用户类型，未登录时抛出异常
      *
      * @return 用户类型
-     * @throws IllegalStateException 未登录时抛出
+     * @throws BizException 未登录时抛出
      */
     public static UserType requireUserType() {
         UserType userType = getUserType();
         if (userType == null) {
-            throw new IllegalStateException("当前未登录，无法获取用户类型");
+            throw new BizException(ErrorCode.UNAUTHORIZED, "当前未登录，无法获取用户类型");
         }
         return userType;
     }

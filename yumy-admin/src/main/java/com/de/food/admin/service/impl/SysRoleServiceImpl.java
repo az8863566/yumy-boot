@@ -18,11 +18,13 @@ import com.de.food.admin.service.SysRoleService;
 import com.de.food.admin.vo.SysRoleVO;
 import com.de.food.common.exception.BizException;
 import com.de.food.common.result.ErrorCode;
+import com.baomidou.mybatisplus.extension.toolkit.MybatisBatchUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 /**
@@ -35,6 +37,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     private final SysRoleConverter sysRoleConverter;
     private final SysRoleMenuMapper sysRoleMenuMapper;
     private final SysUserRoleMapper sysUserRoleMapper;
+    private final DataSource dataSource;
 
     @Override
     public IPage<SysRoleVO> page(SysRoleQueryDTO queryDTO) {
@@ -129,7 +132,10 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
                 rm.setMenuId(menuId);
                 return rm;
             }).toList();
-            roleMenus.forEach(sysRoleMenuMapper::insert);
+            MybatisBatchUtils.execute(dataSource, roleMenus, (sqlSession, rm) -> {
+                sqlSession.insert(
+                        "com.de.food.business.mapper.SysRoleMenuMapper.insert", rm);
+            });
         }
     }
 }

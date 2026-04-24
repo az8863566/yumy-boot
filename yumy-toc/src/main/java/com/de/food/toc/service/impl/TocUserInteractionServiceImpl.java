@@ -73,14 +73,14 @@ public class TocUserInteractionServiceImpl implements TocUserInteractionService 
             like.setRecipeId(recipeId);
             try {
                 tocUserLikeMapper.insert(like);
+                // 只有 insert 成功才更新计数，避免并发 DuplicateKey 时计数翻倍
+                tocRecipeMapper.update(null, new LambdaUpdateWrapper<TocRecipe>()
+                        .eq(TocRecipe::getRecipeId, recipeId)
+                        .setSql("likes = likes + 1"));
             } catch (DuplicateKeyException e) {
-                // 并发场景：另一请求已插入，视为已点赞
+                // 并发场景：另一请求已插入并已更新计数，无需重复操作
                 log.info("点赞并发冲突, userId={}, recipeId={}", userId, recipeId);
             }
-            // 原子更新：likes + 1
-            tocRecipeMapper.update(null, new LambdaUpdateWrapper<TocRecipe>()
-                    .eq(TocRecipe::getRecipeId, recipeId)
-                    .setSql("likes = likes + 1"));
             liked = true;
         }
 

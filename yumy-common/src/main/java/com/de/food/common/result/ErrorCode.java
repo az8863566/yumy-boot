@@ -29,6 +29,7 @@ public enum ErrorCode {
     UNAUTHORIZED(1002, "未认证"),
     FORBIDDEN(1003, "无权限"),
     NOT_FOUND(1004, "资源不存在"),
+    METHOD_NOT_ALLOWED(1006, "请求方法不允许"),
     INTERNAL_ERROR(1005, "系统内部错误"),
 
     // 系统管理业务错误（2xxx）

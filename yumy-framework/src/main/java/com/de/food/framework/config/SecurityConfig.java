@@ -92,6 +92,7 @@ public class SecurityConfig {
         http
             .securityMatcher("/admin/**", "/swagger-ui/**", "/v3/api-docs/**")
             .csrf(csrf -> csrf.spa())
+            .cors(cors -> cors.configurationSource(apiCorsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .exceptionHandling(ex -> ex
                 .authenticationEntryPoint(new JsonAuthenticationEntryPoint(objectMapper))
@@ -136,9 +137,9 @@ public class SecurityConfig {
     }
 
     /**
-     * API 链 CORS 配置
+     * CORS 配置
      * <p>
-     * 从配置文件读取允许的源：
+     * 从配置文件读取允许的源，同时服务于 API 链和 Admin 链：
      * <ul>
      *   <li>dev/local 环境：允许所有源（*）</li>
      *   <li>prod 环境：单独配置允许的源列表</li>
@@ -162,7 +163,7 @@ public class SecurityConfig {
         config.setMaxAge(3600L);
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/toc/**", config);
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 
