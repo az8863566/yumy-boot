@@ -15,7 +15,7 @@ import java.util.List;
 public class TocRecipeDetailVO {
 
     @Schema(description = "菜谱ID")
-    private Long recipeId;
+    private String recipeId;
 
     @Schema(description = "菜谱标题")
     private String title;
@@ -27,7 +27,7 @@ public class TocRecipeDetailVO {
     private String image;
 
     @Schema(description = "所属子分类ID")
-    private Long categoryId;
+    private String categoryId;
 
     @Schema(description = "点赞数")
     private Integer likes;
@@ -66,7 +66,7 @@ public class TocRecipeDetailVO {
     public static class IngredientVO {
 
         @Schema(description = "食材ID")
-        private Long ingredientId;
+        private String ingredientId;
 
         @Schema(description = "食材名称")
         private String name;
@@ -86,7 +86,7 @@ public class TocRecipeDetailVO {
     public static class StepVO {
 
         @Schema(description = "步骤ID")
-        private Long stepId;
+        private String stepId;
 
         @Schema(description = "步骤序号")
         private Integer stepNumber;

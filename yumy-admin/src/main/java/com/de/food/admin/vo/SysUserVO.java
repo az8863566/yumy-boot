@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 用户信息 VO
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 public class SysUserVO {
 
     @Schema(description = "用户ID")
-    private Long userId;
+    private String userId;
 
     @Schema(description = "用户名")
     private String username;
@@ -40,4 +41,7 @@ public class SysUserVO {
 
     @Schema(description = "备注")
     private String remark;
+
+    @Schema(description = "关联角色列表")
+    private List<SysRoleVO> roles;
 }

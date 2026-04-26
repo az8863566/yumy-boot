@@ -37,8 +37,9 @@ public class TocRecipeServiceImpl implements TocRecipeService {
     @Override
     public IPage<TocRecipeVO> page(TocRecipeQueryDTO queryDTO) {
         Page<TocRecipe> page = new Page<>(queryDTO.getPageNum(), queryDTO.getPageSize());
+        Long categoryId = queryDTO.getCategoryId();
         LambdaQueryWrapper<TocRecipe> wrapper = new LambdaQueryWrapper<TocRecipe>()
-                .eq(queryDTO.getCategoryId() != null, TocRecipe::getCategoryId, queryDTO.getCategoryId())
+                .eq(categoryId != null, TocRecipe::getCategoryId, categoryId)
                 .and(StringUtils.hasText(queryDTO.getKeyword()), w -> w
                         .like(TocRecipe::getTitle, queryDTO.getKeyword())
                         .or()

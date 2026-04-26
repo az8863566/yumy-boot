@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class SysConfigVO {
 
     @Schema(description = "参数ID")
-    private Long configId;
+    private String configId;
 
     @Schema(description = "参数名称")
     private String configName;

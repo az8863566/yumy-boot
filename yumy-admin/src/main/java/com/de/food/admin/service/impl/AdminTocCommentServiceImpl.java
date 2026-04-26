@@ -41,9 +41,11 @@ public class AdminTocCommentServiceImpl extends ServiceImpl<TocCommentMapper, To
     @Override
     public IPage<TocCommentVO> page(TocCommentQueryDTO queryDTO) {
         Page<TocComment> page = new Page<>(queryDTO.getPageNum(), queryDTO.getPageSize());
+        Long recipeId = queryDTO.getRecipeId();
+        Long userId = queryDTO.getUserId();
         LambdaQueryWrapper<TocComment> wrapper = new LambdaQueryWrapper<TocComment>()
-                .eq(queryDTO.getRecipeId() != null, TocComment::getRecipeId, queryDTO.getRecipeId())
-                .eq(queryDTO.getUserId() != null, TocComment::getUserId, queryDTO.getUserId())
+                .eq(recipeId != null, TocComment::getRecipeId, recipeId)
+                .eq(userId != null, TocComment::getUserId, userId)
                 .like(StringUtils.hasText(queryDTO.getText()), TocComment::getText, queryDTO.getText())
                 .orderByDesc(TocComment::getCreateTime);
 

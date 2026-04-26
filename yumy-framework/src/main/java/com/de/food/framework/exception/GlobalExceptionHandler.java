@@ -129,6 +129,16 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 数字格式异常（ID 参数非数字字符串）
+     */
+    @ExceptionHandler(NumberFormatException.class)
+    public Result<Void> handleNumberFormatException(NumberFormatException e, HttpServletResponse response) {
+        log.warn("数字格式转换失败: {}", e.getMessage());
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return Result.fail(ErrorCode.PARAM_ERROR.getCode(), "ID格式不正确");
+    }
+
+    /**
      * 未知异常
      */
     @ExceptionHandler(Exception.class)

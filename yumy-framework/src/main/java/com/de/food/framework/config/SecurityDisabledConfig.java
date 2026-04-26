@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @ConditionalOnProperty(name = "security.enabled", havingValue = "false", matchIfMissing = false)
+@Slf4j
 public class SecurityDisabledConfig {
 
     @Value("${cors.allowed-origins:*}")
@@ -73,6 +75,7 @@ public class SecurityDisabledConfig {
         // 解析允许的源（支持逗号分隔的多个源）
         // 注意：allowCredentials=true 时不能使用 allowedOrigins("*")，必须用 allowedOriginPatterns
         if ("*".equals(allowedOrigins)) {
+            log.warn("CORS 允许所有源 (allowedOriginPatterns=*)，生产环境请配置具体域名");
             config.setAllowedOriginPatterns(List.of("*"));
         } else {
             config.setAllowedOriginPatterns(Arrays.asList(allowedOrigins.split(",")));

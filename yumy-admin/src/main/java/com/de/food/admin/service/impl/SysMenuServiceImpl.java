@@ -92,10 +92,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * 构建菜单树
      */
     private List<SysMenuVO> buildTree(List<SysMenuVO> menuList) {
-        Map<Long, List<SysMenuVO>> groupedByParent = menuList.stream()
-                .collect(Collectors.groupingBy(m -> m.getParentId() != null ? m.getParentId() : 0L));
+        Map<String, List<SysMenuVO>> groupedByParent = menuList.stream()
+                .collect(Collectors.groupingBy(m -> m.getParentId() != null ? m.getParentId() : "0"));
 
-        List<SysMenuVO> roots = groupedByParent.getOrDefault(0L, new ArrayList<>());
+        List<SysMenuVO> roots = groupedByParent.getOrDefault("0", new ArrayList<>());
         for (SysMenuVO root : roots) {
             root.setChildren(groupedByParent.getOrDefault(root.getMenuId(), new ArrayList<>()));
             fillChildren(root, groupedByParent);
@@ -103,7 +103,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         return roots;
     }
 
-    private void fillChildren(SysMenuVO parent, Map<Long, List<SysMenuVO>> groupedByParent) {
+    private void fillChildren(SysMenuVO parent, Map<String, List<SysMenuVO>> groupedByParent) {
         List<SysMenuVO> children = parent.getChildren();
         if (children != null) {
             for (SysMenuVO child : children) {

@@ -46,14 +46,14 @@ public class AdminTocCategoryServiceImpl extends ServiceImpl<TocParentCategoryMa
                 new LambdaQueryWrapper<TocSubCategory>()
                         .orderByAsc(TocSubCategory::getSortOrder));
 
-        Map<Long, List<TocCategoryTreeVO.TocSubCategoryItemVO>> subMap = allSubs.stream()
+        Map<String, List<TocCategoryTreeVO.TocSubCategoryItemVO>> subMap = allSubs.stream()
                 .map(categoryConverter::toSubVO)
                 .collect(Collectors.groupingBy(TocCategoryTreeVO.TocSubCategoryItemVO::getParentId));
 
         return parents.stream()
                 .map(parent -> {
                     TocCategoryTreeVO vo = categoryConverter.toParentVONoSub(parent);
-                    vo.setSubCategories(subMap.getOrDefault(parent.getCategoryId(), List.of()));
+                    vo.setSubCategories(subMap.getOrDefault(String.valueOf(parent.getCategoryId()), List.of()));
                     return vo;
                 })
                 .toList();

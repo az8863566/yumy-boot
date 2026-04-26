@@ -44,23 +44,23 @@ public class MyBatisPlusConfig {
             public void insertFill(MetaObject metaObject) {
                 this.strictInsertFill(metaObject, "createTime", LocalDateTime.class, LocalDateTime.now());
                 this.strictInsertFill(metaObject, "updateTime", LocalDateTime.class, LocalDateTime.now());
-                this.strictInsertFill(metaObject, "createBy", String.class, getCurrentUser());
-                this.strictInsertFill(metaObject, "updateBy", String.class, getCurrentUser());
+                this.strictInsertFill(metaObject, "createBy", Long.class, getCurrentUserId());
+                this.strictInsertFill(metaObject, "updateBy", Long.class, getCurrentUserId());
             }
 
             @Override
             public void updateFill(MetaObject metaObject) {
                 this.strictUpdateFill(metaObject, "updateTime", LocalDateTime.class, LocalDateTime.now());
-                this.strictUpdateFill(metaObject, "updateBy", String.class, getCurrentUser());
+                this.strictUpdateFill(metaObject, "updateBy", Long.class, getCurrentUserId());
             }
 
             /**
-             * 获取当前操作用户标识
+             * 获取当前操作用户ID
              * 通过 {@link SecurityUtils} 获取，兼容 Session 和 JWT 两种认证方式
              */
-            private String getCurrentUser() {
-                String username = SecurityUtils.getUsername();
-                return username != null ? username : "anonymous";
+            private Long getCurrentUserId() {
+                Long userId = SecurityUtils.getUserId();
+                return userId != null ? userId : 0L;
             }
         };
     }

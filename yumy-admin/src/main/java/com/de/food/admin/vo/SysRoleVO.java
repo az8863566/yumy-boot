@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class SysRoleVO {
 
     @Schema(description = "角色ID")
-    private Long roleId;
+    private String roleId;
 
     @Schema(description = "角色名称")
     private String roleName;

@@ -57,6 +57,9 @@ public class TocAuthServiceImpl implements TocAuthService {
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new BizException(ErrorCode.USER_PASSWORD_ERROR);
         }
+        if (user.getStatus() == null || user.getStatus() != 1) {
+            throw new BizException(ErrorCode.USER_DISABLED);
+        }
 
         return buildAuthVO(user);
     }

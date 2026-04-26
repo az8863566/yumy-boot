@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class SysDictTypeVO {
 
     @Schema(description = "字典ID")
-    private Long dictId;
+    private String dictId;
 
     @Schema(description = "字典名称")
     private String dictName;

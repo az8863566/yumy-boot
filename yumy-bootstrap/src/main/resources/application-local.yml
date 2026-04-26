@@ -16,7 +16,7 @@ spring:
       password: yumy123
 
 security:
-  enabled: false
+  enabled: true
 
 # JWT
 jwt:

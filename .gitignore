@@ -22,7 +22,7 @@ target/
 .project
 .classpath
 .metadata/
-bin/
+bin/                                      
 
 # IntelliJ
 out/

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class SysOperLogVO {
 
     @Schema(description = "日志ID")
-    private Long operId;
+    private String operId;
 
     @Schema(description = "模块标题")
     private String title;

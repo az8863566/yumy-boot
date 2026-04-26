@@ -57,7 +57,8 @@ public class TocUserInteractionController {
 
     @Operation(summary = "获取我的点赞菜谱ID列表")
     @GetMapping("/likes")
-    public Result<List<Long>> getMyLikedRecipeIds() {
-        return Result.ok(tocUserInteractionService.getMyLikedRecipeIds());
+    public Result<List<String>> getMyLikedRecipeIds() {
+        return Result.ok(tocUserInteractionService.getMyLikedRecipeIds().stream()
+                .map(String::valueOf).toList());
     }
 }

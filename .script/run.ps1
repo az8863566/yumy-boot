@@ -27,7 +27,7 @@ $ProjectRoot = Split-Path -Parent $PSScriptRoot
 $BootstrapModule = Join-Path $ProjectRoot "yumy-bootstrap"
 $JarFile = Join-Path $BootstrapModule "target\yumy-bootstrap-1.0.0-SNAPSHOT.jar"
 $DefaultPort = 8080  # 默认端口，根据 application.yml 配置
-$JdkHome = "D:\workTool\jdk-21.0.10"
+$JdkHome = "F:\Tool\jdk21"
 $MavenCommand = "mvn"
 
 # ==================== 日志函数 ====================

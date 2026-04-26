@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 用户新增 DTO
  */
@@ -44,4 +46,7 @@ public class SysUserCreateDTO {
 
     @Schema(description = "备注")
     private String remark;
+
+    @Schema(description = "关联角色ID列表")
+    private List<Long> roleIds;
 }

@@ -46,7 +46,7 @@ public class TocCategoryServiceImpl implements TocCategoryService {
                         .orderByAsc(TocSubCategory::getSortOrder));
 
         // 按 parentId 分组
-        Map<Long, List<TocCategoryVO.TocSubCategoryVO>> subMap = subs.stream()
+        Map<String, List<TocCategoryVO.TocSubCategoryVO>> subMap = subs.stream()
                 .map(tocCategoryConverter::toSubCategoryVO)
                 .collect(Collectors.groupingBy(TocCategoryVO.TocSubCategoryVO::getParentId));
 
@@ -54,7 +54,7 @@ public class TocCategoryServiceImpl implements TocCategoryService {
         return parents.stream()
                 .map(parent -> {
                     TocCategoryVO vo = tocCategoryConverter.toCategoryVO(parent);
-                    vo.setSubCategories(subMap.getOrDefault(parent.getCategoryId(), List.of()));
+                    vo.setSubCategories(subMap.getOrDefault(String.valueOf(parent.getCategoryId()), List.of()));
                     return vo;
                 })
                 .toList();

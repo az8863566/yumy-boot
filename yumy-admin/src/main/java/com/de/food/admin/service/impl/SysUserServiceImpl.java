@@ -1,13 +1,17 @@
 package com.de.food.admin.service.impl;
 
+import com.baomidou.mybatisplus.core.batch.MybatisBatch;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.MybatisBatchUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.de.food.admin.converter.SysUserConverter;
 import com.de.food.admin.dto.SysUserCreateDTO;
 import com.de.food.admin.dto.SysUserQueryDTO;
 import com.de.food.admin.dto.SysUserUpdateDTO;
+import com.de.food.admin.vo.SysRoleVO;
+import com.de.food.admin.vo.SysUserVO;
 import com.de.food.business.entity.SysMenu;
 import com.de.food.business.entity.SysRole;
 import com.de.food.business.entity.SysRoleMenu;
@@ -18,8 +22,9 @@ import com.de.food.business.mapper.SysRoleMapper;
 import com.de.food.business.mapper.SysRoleMenuMapper;
 import com.de.food.business.mapper.SysUserMapper;
 import com.de.food.business.mapper.SysUserRoleMapper;
+import org.apache.ibatis.session.SqlSessionFactory;
 import com.de.food.admin.service.SysUserService;
-import com.de.food.admin.vo.SysUserVO;
+import com.de.food.admin.converter.SysRoleConverter;
 import com.de.food.common.exception.BizException;
 import com.de.food.common.result.ErrorCode;
 import com.de.food.framework.util.SecurityUtils;
@@ -30,7 +35,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 用户 Service 实现
@@ -40,11 +48,13 @@ import java.util.List;
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
     private final SysUserConverter sysUserConverter;
+    private final SysRoleConverter sysRoleConverter;
     private final SysUserRoleMapper sysUserRoleMapper;
     private final SysRoleMapper sysRoleMapper;
     private final SysRoleMenuMapper sysRoleMenuMapper;
     private final SysMenuMapper sysMenuMapper;
     private final PasswordEncoder passwordEncoder;
+    private final SqlSessionFactory sqlSessionFactory;
 
     @Override
     public IPage<SysUserVO> page(SysUserQueryDTO queryDTO) {
@@ -57,7 +67,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .orderByDesc(SysUser::getCreateTime);
 
         IPage<SysUser> entityPage = baseMapper.selectPage(page, wrapper);
-        return entityPage.convert(sysUserConverter::toVO);
+        IPage<SysUserVO> voPage = entityPage.convert(sysUserConverter::toVO);
+
+        // 批量填充角色信息
+        fillUserRoles(voPage.getRecords());
+        return voPage;
     }
 
     @Override
@@ -66,7 +80,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (entity == null) {
             throw new BizException(ErrorCode.USER_NOT_FOUND);
         }
-        return sysUserConverter.toVO(entity);
+        SysUserVO vo = sysUserConverter.toVO(entity);
+        vo.setRoles(getRolesByUserId(userId));
+        return vo;
     }
 
     @Override
@@ -80,6 +96,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser entity = sysUserConverter.toEntity(dto);
         entity.setPassword(passwordEncoder.encode(dto.getPassword()));
         baseMapper.insert(entity);
+
+        // 保存用户角色关联
+        if (dto.getRoleIds() != null) {
+            saveUserRoles(entity.getUserId(), dto.getRoleIds());
+        }
     }
 
     @Override
@@ -91,6 +112,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         sysUserConverter.updateEntity(dto, entity);
         baseMapper.updateById(entity);
+
+        // 更新用户角色关联
+        if (dto.getRoleIds() != null) {
+            resetUserRoles(dto.getUserId(), dto.getRoleIds());
+        }
     }
 
     @Override
@@ -152,5 +178,85 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
+    }
+
+    /**
+     * 重置用户角色关联（先删后插）
+     */
+    private void resetUserRoles(Long userId, List<Long> roleIds) {
+        // 先删除原有角色关联
+        sysUserRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>()
+                .eq(SysUserRole::getUserId, userId));
+        // 再保存新的角色关联
+        saveUserRoles(userId, roleIds);
+    }
+
+    /**
+     * 批量保存用户角色关联
+     */
+    private void saveUserRoles(Long userId, List<Long> roleIds) {
+        if (roleIds == null || roleIds.isEmpty()) {
+            return;
+        }
+        List<SysUserRole> userRoles = roleIds.stream().map(roleId -> {
+            SysUserRole userRole = new SysUserRole();
+            userRole.setUserId(userId);
+            userRole.setRoleId(roleId);
+            return userRole;
+        }).toList();
+        MybatisBatch.Method<SysUserRole> method = new MybatisBatch.Method<>(SysUserRoleMapper.class);
+        MybatisBatchUtils.execute(sqlSessionFactory, userRoles, method.insert());
+    }
+
+    /**
+     * 批量填充用户角色信息
+     */
+    private void fillUserRoles(List<SysUserVO> users) {
+        if (users == null || users.isEmpty()) {
+            return;
+        }
+        List<Long> userIds = users.stream().map(u -> Long.valueOf(u.getUserId())).toList();
+
+        // 批量查询用户角色关联
+        List<SysUserRole> userRoles = sysUserRoleMapper.selectList(
+                new LambdaQueryWrapper<SysUserRole>().in(SysUserRole::getUserId, userIds));
+        if (userRoles.isEmpty()) {
+            return;
+        }
+
+        // 按用户ID分组
+        Map<Long, List<Long>> userRoleMap = userRoles.stream()
+                .collect(Collectors.groupingBy(SysUserRole::getUserId,
+                        Collectors.mapping(SysUserRole::getRoleId, Collectors.toList())));
+
+        // 批量查询所有角色
+        List<Long> allRoleIds = userRoles.stream().map(SysUserRole::getRoleId).distinct().toList();
+        List<SysRole> roles = sysRoleMapper.selectBatchIds(allRoleIds);
+        Map<Long, SysRoleVO> roleVOMap = roles.stream()
+                .collect(Collectors.toMap(SysRole::getRoleId, sysRoleConverter::toVO));
+
+        // 填充角色信息
+        for (SysUserVO user : users) {
+            List<Long> roleIds = userRoleMap.getOrDefault(Long.valueOf(user.getUserId()), Collections.emptyList());
+            List<SysRoleVO> roleVOs = roleIds.stream()
+                    .map(roleVOMap::get)
+                    .filter(r -> r != null)
+                    .toList();
+            user.setRoles(roleVOs);
+        }
+    }
+
+    /**
+     * 查询单个用户的角色列表
+     */
+    private List<SysRoleVO> getRolesByUserId(Long userId) {
+        List<SysUserRole> userRoles = sysUserRoleMapper.selectList(
+                new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, userId));
+        if (userRoles.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<Long> roleIds = userRoles.stream().map(SysUserRole::getRoleId).toList();
+        List<SysRole> roles = sysRoleMapper.selectBatchIds(roleIds);
+        return roles.stream().map(sysRoleConverter::toVO).toList();
     }
 }

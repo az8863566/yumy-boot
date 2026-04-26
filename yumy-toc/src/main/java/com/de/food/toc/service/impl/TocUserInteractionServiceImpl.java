@@ -154,7 +154,15 @@ public class TocUserInteractionServiceImpl implements TocUserInteractionService 
         return favResult.convert(fav -> {
             TocRecipe r = recipeMap.get(fav.getRecipeId());
             return r != null ? tocRecipeConverter.toVO(r) : null;
-        });
+        }).getRecords().stream()
+                .filter(vo -> vo != null)
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        list -> {
+                            Page<TocRecipeVO> result = new Page<>(favResult.getCurrent(), favResult.getSize(), favResult.getTotal());
+                            result.setRecords(list);
+                            return result;
+                        }));
     }
 
     @Override

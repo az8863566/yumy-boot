@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class SysDictDataVO {
 
     @Schema(description = "字典编码")
-    private Long dictCode;
+    private String dictCode;
 
     @Schema(description = "字典排序")
     private Integer dictSort;

@@ -41,11 +41,11 @@ public abstract class BaseEntity implements Serializable {
      * 创建人标识
      */
     @TableField(fill = FieldFill.INSERT)
-    private String createBy;
+    private Long createBy;
 
     /**
      * 更新人标识
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private String updateBy;
+    private Long updateBy;
 }

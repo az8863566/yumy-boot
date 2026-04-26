@@ -9,7 +9,7 @@ import lombok.Data;
 public class UploadVO {
 
     /** 文件记录ID */
-    private Long fileId;
+    private String fileId;
 
     /** 文件访问URL */
     private String url;

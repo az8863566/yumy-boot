@@ -15,7 +15,7 @@ import java.util.List;
 public class TocCategoryTreeVO {
 
     @Schema(description = "分类ID")
-    private Long categoryId;
+    private String categoryId;
 
     @Schema(description = "分类名称")
     private String name;
@@ -38,10 +38,10 @@ public class TocCategoryTreeVO {
     public static class TocSubCategoryItemVO {
 
         @Schema(description = "子分类ID")
-        private Long categoryId;
+        private String categoryId;
 
         @Schema(description = "父分类ID")
-        private Long parentId;
+        private String parentId;
 
         @Schema(description = "子分类名称")
         private String name;

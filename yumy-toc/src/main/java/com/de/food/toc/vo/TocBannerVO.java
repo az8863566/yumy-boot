@@ -11,7 +11,7 @@ import lombok.Data;
 public class TocBannerVO {
 
     @Schema(description = "轮播图ID")
-    private Long bannerId;
+    private String bannerId;
 
     @Schema(description = "轮播图标题")
     private String title;

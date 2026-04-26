@@ -110,9 +110,17 @@ yumy-boot (根项目，负责依赖版本管理)
 - 索引命名：唯一索引 `uk_表名_字段名`，普通索引 `idx_表名_字段名`
 - 所有表和字段必须添加 COMMENT 注释
 
-#### 3.1.5 ID 生成
-
-- 全局唯一 ID 统一使用雪花算法生成
+#### 3.1.5 ID 生成与精度规范
+- 全局唯一 ID 统一使用雪花算法生成（`@TableId(type = IdType.ASSIGN_ID)`），数据库字段类型为 `bigint`
+- **雪花 ID 精度丢失问题**：JS 的 `Number.MAX_SAFE_INTEGER` 约为 `9×10^15`（16 位），而雪花 ID 为 18-19 位数字，前端 `JSON.parse` 后必然丢精度
+- **解决方案**：仅 VO 层 ID 字段使用 `String` 类型，DTO/Entity 层保持 `Long` 不动
+- 转换规则：
+  - Entity → VO：MapStruct 自动 `String.valueOf(Long)` 转换（防前端精度丢失）
+  - DTO ↔ Entity：MapStruct 直接映射 `Long` ↔ `Long`，无需转换
+  - Controller `@PathVariable`：直接使用 `Long` 接收，Spring MVC 自动将路径字符串转为 Long
+- **禁止事项**：
+  - 禁止在 VO 中使用 `Long` 类型作为 ID 字段
+  - 禁止将 Entity 的 `Long` ID 直接返回给前端（必须通过 VO 转换为 `String`）
 
 ### 3.2 MyBatis-Plus 使用规范
 
@@ -347,6 +355,9 @@ Controller 只能做三件事：
 | Jackson 序列化问题 | 统一使用 `JacksonUtils`，JSR310 已内置禁止手动注册 `JavaTimeModule` |
 | Spring Security Bean 冲突 | 检查是否有同名 Bean，使用 `@Qualifier` 或 `@Primary` 解决 |
 | MyBatis-Plus 批量操作类找不到 | `MybatisBatch` → `core.batch`，`MybatisBatchUtils` → `core.toolkit`，**不是 `extension.toolkit`** |
+| 雪花 ID 前端精度丢失 | VO 层 ID 使用 `String`，DTO/Entity 保持 `Long`，Controller `@PathVariable Long`，Spring MVC 自动转换 |
+| Long.valueOf 传入 null | Service 层从 VO String ID 转回 Long 时需先判空：`userId != null ? Long.valueOf(userId) : null` |
+| MapStruct String→Long 空字符串 | `Long.parseLong("")` 抛 `NumberFormatException`，由全局异常处理器兜底返回 400 |
 
 ### B. 规范速查表
 
@@ -359,8 +370,9 @@ Controller 只能做三件事：
 | 权限控制 | 必须添加 @PreAuthorize，格式：模块:资源:操作 | 7.1 |
 | JSON 处理 | 业务代码使用 JacksonUtils，禁止 new ObjectMapper | 3.5 |
 | 事务管理 | @Transactional 仅用于 Service 层，禁止用于查询 | 5.5 |
+| ID 精度 | VO 层 ID 用 String，DTO/Entity 用 Long，Controller @PathVariable Long | 3.1.5 |
 
 ---
 
-> **最后更新**：2026-04-23  
+> **最后更新**：2026-04-26  
 > **适用版本**：JDK 21 + Spring Boot 4.x + Jackson 3.x

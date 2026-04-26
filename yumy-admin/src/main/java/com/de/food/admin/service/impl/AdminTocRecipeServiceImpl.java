@@ -1,7 +1,9 @@
 package com.de.food.admin.service.impl;
 
+import com.baomidou.mybatisplus.core.batch.MybatisBatch;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.MybatisBatchUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.de.food.admin.converter.AdminTocRecipeConverter;
@@ -18,6 +20,7 @@ import com.de.food.business.entity.TocRecipeStep;
 import com.de.food.business.mapper.TocRecipeIngredientMapper;
 import com.de.food.business.mapper.TocRecipeMapper;
 import com.de.food.business.mapper.TocRecipeStepMapper;
+import org.apache.ibatis.session.SqlSessionFactory;
 import com.de.food.common.exception.BizException;
 import com.de.food.common.result.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +40,15 @@ public class AdminTocRecipeServiceImpl extends ServiceImpl<TocRecipeMapper, TocR
     private final TocRecipeIngredientMapper tocRecipeIngredientMapper;
     private final TocRecipeStepMapper tocRecipeStepMapper;
     private final AdminTocRecipeConverter recipeConverter;
+    private final SqlSessionFactory sqlSessionFactory;
 
     @Override
     public IPage<TocRecipeVO> page(TocRecipeQueryDTO queryDTO) {
         Page<TocRecipe> page = new Page<>(queryDTO.getPageNum(), queryDTO.getPageSize());
+        Long categoryId = queryDTO.getCategoryId();
         LambdaQueryWrapper<TocRecipe> wrapper = new LambdaQueryWrapper<TocRecipe>()
                 .like(StringUtils.hasText(queryDTO.getTitle()), TocRecipe::getTitle, queryDTO.getTitle())
-                .eq(queryDTO.getCategoryId() != null, TocRecipe::getCategoryId, queryDTO.getCategoryId())
+                .eq(categoryId != null, TocRecipe::getCategoryId, categoryId)
                 .eq(StringUtils.hasText(queryDTO.getDifficulty()), TocRecipe::getDifficulty, queryDTO.getDifficulty())
                 .gt(queryDTO.getRecommended() != null && queryDTO.getRecommended(), TocRecipe::getRecommendSort, 0)
                 .eq(queryDTO.getRecommended() != null && !queryDTO.getRecommended(), TocRecipe::getRecommendSort, 0)
@@ -93,14 +98,14 @@ public class AdminTocRecipeServiceImpl extends ServiceImpl<TocRecipeMapper, TocR
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateRecipe(TocRecipeUpdateDTO dto) {
-        TocRecipe entity = baseMapper.selectById(dto.getRecipeId());
+        Long recipeId = dto.getRecipeId();
+        TocRecipe entity = baseMapper.selectById(recipeId);
         if (entity == null) {
             throw new BizException(ErrorCode.TOC_RECIPE_NOT_FOUND);
         }
         recipeConverter.updateEntity(dto, entity);
         baseMapper.updateById(entity);
 
-        Long recipeId = dto.getRecipeId();
         // 先删后插：食材
         tocRecipeIngredientMapper.delete(
                 new LambdaQueryWrapper<TocRecipeIngredient>()
@@ -151,12 +156,16 @@ public class AdminTocRecipeServiceImpl extends ServiceImpl<TocRecipeMapper, TocR
         if (ingredientItems != null && !ingredientItems.isEmpty()) {
             List<TocRecipeIngredient> ingredients = recipeConverter.toIngredientEntityList(ingredientItems);
             ingredients.forEach(i -> i.setRecipeId(recipeId));
-            ingredients.forEach(tocRecipeIngredientMapper::insert);
+            MybatisBatch.Method<TocRecipeIngredient> ingredientMethod =
+                    new MybatisBatch.Method<>(TocRecipeIngredientMapper.class);
+            MybatisBatchUtils.execute(sqlSessionFactory, ingredients, ingredientMethod.insert());
         }
         if (stepItems != null && !stepItems.isEmpty()) {
             List<TocRecipeStep> steps = recipeConverter.toStepEntityList(stepItems);
             steps.forEach(s -> s.setRecipeId(recipeId));
-            steps.forEach(tocRecipeStepMapper::insert);
+            MybatisBatch.Method<TocRecipeStep> stepMethod =
+                    new MybatisBatch.Method<>(TocRecipeStepMapper.class);
+            MybatisBatchUtils.execute(sqlSessionFactory, steps, stepMethod.insert());
         }
     }
 }

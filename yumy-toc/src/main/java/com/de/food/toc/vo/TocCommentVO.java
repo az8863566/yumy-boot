@@ -15,13 +15,13 @@ import java.util.List;
 public class TocCommentVO {
 
     @Schema(description = "评论ID")
-    private Long commentId;
+    private String commentId;
 
     @Schema(description = "菜谱ID")
-    private Long recipeId;
+    private String recipeId;
 
     @Schema(description = "用户ID")
-    private Long userId;
+    private String userId;
 
     @Schema(description = "用户名")
     private String username;

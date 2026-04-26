@@ -96,7 +96,7 @@ public class FileUploadService {
             log.info("文件上传成功, fileId={}, originalName={}, module={}", sysFile.getFileId(), originalName, module);
 
             UploadVO vo = new UploadVO();
-            vo.setFileId(sysFile.getFileId());
+            vo.setFileId(String.valueOf(sysFile.getFileId()));
             vo.setUrl(fileUrl);
             vo.setOriginalName(originalName);
             vo.setStoredName(storedName);

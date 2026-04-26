@@ -68,8 +68,9 @@ public class SysRoleController {
     @Operation(summary = "查询角色菜单ID列表")
     @PreAuthorize("hasAuthority('system:role:queryMenus')")
     @GetMapping("/{roleId}/menus")
-    public Result<List<Long>> getMenuIds(@PathVariable Long roleId) {
-        return Result.ok(sysRoleService.getMenuIdsByRoleId(roleId));
+    public Result<List<String>> getMenuIds(@PathVariable Long roleId) {
+        return Result.ok(sysRoleService.getMenuIdsByRoleId(roleId).stream()
+                .map(String::valueOf).toList());
     }
 
     @Operation(summary = "分配角色菜单")
